@@ -15,6 +15,21 @@ import torch.nn.functional as F
 from torch import Tensor
 
 
+__all__ = [
+    "XAIConfig",
+    "GradCAM",
+    "ForwardHookStore",
+    "build_gradcam_tools",
+    "ActivationExtractor",
+    "build_activation_extractors",
+    "save_cam_overlay",
+    "save_activation_map",
+    "OptionalLIMEExplainer",
+    "resolve_module",
+    "tensor_to_image_np",
+]
+
+
 @dataclass
 class XAIConfig:
     gradcam_target_layer_plantvit: str = "plantvit.stage5"
@@ -143,9 +158,9 @@ def build_activation_extractors(model: nn.Module) -> Dict[str, ActivationExtract
 
 
 def tensor_to_image_np(x: Tensor) -> np.ndarray:
-    x = x.detach().cpu().squeeze(0)
-    x = x.permute(1, 2, 0).numpy()
-    return np.clip(x, 0.0, 1.0)
+    tensor_cpu = x.detach().cpu().squeeze(0)
+    image_np = tensor_cpu.permute(1, 2, 0).numpy()
+    return np.clip(image_np, 0.0, 1.0)
 
 
 def save_cam_overlay(image: Tensor, cam: Tensor, save_path: Path, title: str) -> None:
@@ -208,7 +223,7 @@ class OptionalLIMEExplainer:
             num_samples=num_samples,
         )
         temp, mask = explanation.get_image_and_mask(
-            explanation.top_labels[0],
+            explanation.top_labels[0],  # type: ignore
             positive_only=True,
             num_features=8,
             hide_rest=False,
