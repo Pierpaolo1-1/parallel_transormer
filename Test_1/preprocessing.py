@@ -1,4 +1,13 @@
 
+#=====================================#
+#Non serve a neinte importa solo libreria e fa micro preprocessing 
+#ma possiamo eliminarlo era per tenere ordine
+#infatti da anche un paio di errori ma va comuque 
+#(fa due cose in meno, facciamo prima ad eliminarlo o rifarlo da zero)
+
+#=====================================#
+
+
 from __future__ import annotations
 
 from dataclasses import dataclass
